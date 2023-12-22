@@ -1,0 +1,16 @@
+{
+  "account": {
+    "login": "Sign in",
+    "create": "Create an account",
+    "forgot": "Forgot password"
+  },
+  "formError": {
+    "invalid": "Please provide both an email and a password.",
+    "wrong": "Something went wrong. Please try again later.",
+    "recognize": "Sorry. We did not recognize either your email or password. Please try to sign in again or create a new account."
+  },
+  "fields": {
+    "email": "Email address",
+    "password": "Password"
+  }
+}

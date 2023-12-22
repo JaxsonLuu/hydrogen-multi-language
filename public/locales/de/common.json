@@ -1,0 +1,16 @@
+{
+  "account": {
+    "login": "Anmelden",
+    "create": "Ein Konto erstellen",
+    "forgot": "Passwort vergessen"
+  },
+  "formError": {
+    "invalid": "Bitte geben Sie sowohl eine E-Mail-Adresse als auch ein Passwort an.",
+    "wrong": "Etwas ist schief gelaufen. Bitte versuchen Sie es später noch einmal.",
+    "recognize": "Entschuldigung. Wir haben weder Ihre E-Mail-Adresse noch Ihr Passwort erkannt. Bitte versuchen Sie erneut, sich anzumelden oder ein neues Konto zu erstellen."
+  },
+  "fields": {
+    "email": "E-Mail-Adresse",
+    "password": "Passwort"
+  }
+}

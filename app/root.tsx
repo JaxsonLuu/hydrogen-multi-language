@@ -20,6 +20,8 @@ import {
 } from '@remix-run/react';
 import {ShopifySalesChannel, Seo, useNonce} from '@shopify/hydrogen';
 import invariant from 'tiny-invariant';
+import {useChangeLanguage} from 'remix-i18next';
+import {useTranslation} from 'react-i18next';
 
 import {Layout} from '~/components';
 import {seoPayload} from '~/lib/seo.server';
@@ -66,6 +68,14 @@ export const links: LinksFunction = () => {
   ];
 };
 
+export const handle = {
+  // In the handle export, we can add a i18n key with namespaces our route
+  // will need to load. This key can be a single string or an array of strings.
+  // TIP: In most cases, you should set this to your defaultNS from your i18n config
+  // or if you did not set one, set it to the i18next default namespace "translation"
+  i18n: 'common',
+};
+
 export const useRootLoaderData = () => {
   const [root] = useMatches();
   return root?.data as SerializeFrom<typeof loader>;
@@ -90,6 +100,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       shopId: layout.shop.id,
     },
     seo,
+    locale: storefront.i18n.language.toLowerCase(),
   });
 }
 
@@ -98,11 +109,13 @@ export default function App() {
   const data = useLoaderData<typeof loader>();
   const locale = data.selectedLocale ?? DEFAULT_LOCALE;
   const hasUserConsent = true;
+  const {i18n} = useTranslation();
+  useChangeLanguage(data.locale);
 
   useAnalytics(hasUserConsent);
 
   return (
-    <html lang={locale.language}>
+    <html lang={data.locale} dir={i18n.dir()}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />

@@ -7,7 +7,7 @@ import {CartForm} from '@shopify/hydrogen';
 
 import {Heading, Button, IconCheck} from '~/components';
 import type {Localizations, Locale} from '~/lib/type';
-import {DEFAULT_LOCALE} from '~/lib/utils';
+import {DEFAULT_LOCALE, usePrefixPathWithLocale} from '~/lib/utils';
 import {useRootLoaderData} from '~/root';
 
 export function CountrySelector() {
@@ -36,12 +36,13 @@ export function CountrySelector() {
   useEffect(() => {
     ref(observerRef.current);
   }, [ref, observerRef]);
+  const path = usePrefixPathWithLocale('/api/countries');
 
   // Get available countries list when in view
   useEffect(() => {
     if (!inView || fetcher.data || fetcher.state === 'loading') return;
-    fetcher.load('/api/countries');
-  }, [inView, fetcher]);
+    fetcher.load(path);
+  }, [inView, fetcher, path]);
 
   const closeDropdown = useCallback(() => {
     closeRef.current?.removeAttribute('open');

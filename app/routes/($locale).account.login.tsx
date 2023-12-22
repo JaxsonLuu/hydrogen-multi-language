@@ -12,9 +12,11 @@ import {
   type MetaFunction,
 } from '@remix-run/react';
 import {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import {getInputStyleClasses} from '~/lib/utils';
 import {Link} from '~/components';
+import i18next from '~/i18next.server';
 
 export const handle = {
   isPublic: true,
@@ -42,6 +44,9 @@ export const action: ActionFunction = async ({request, context, params}) => {
 
   const email = formData.get('email');
   const password = formData.get('password');
+  const {session, storefront, cart} = context;
+  const locale = storefront.i18n.language.toLowerCase();
+  const t = await i18next.getFixedT(locale);
 
   if (
     !email ||
@@ -50,11 +55,9 @@ export const action: ActionFunction = async ({request, context, params}) => {
     typeof password !== 'string'
   ) {
     return badRequest({
-      formError: 'Please provide both an email and a password.',
+      formError: t('formError.invalid'),
     });
   }
-
-  const {session, storefront, cart} = context;
 
   try {
     const customerAccessToken = await doLogin(context, {email, password});
@@ -74,7 +77,7 @@ export const action: ActionFunction = async ({request, context, params}) => {
   } catch (error: any) {
     if (storefront.isApiError(error)) {
       return badRequest({
-        formError: 'Something went wrong. Please try again later.',
+        formError: t('formError.wrong'),
       });
     }
 
@@ -83,8 +86,7 @@ export const action: ActionFunction = async ({request, context, params}) => {
      * Let's make one up.
      */
     return badRequest({
-      formError:
-        'Sorry. We did not recognize either your email or password. Please try to sign in again or create a new account.',
+      formError: t('formError.recognize'),
     });
   }
 };
@@ -100,11 +102,12 @@ export default function Login() {
   const [nativePasswordError, setNativePasswordError] = useState<null | string>(
     null,
   );
+  const {t} = useTranslation();
 
   return (
     <div className="flex justify-center my-24 px-4">
       <div className="max-w-md w-full">
-        <h1 className="text-4xl">Sign in.</h1>
+        <h1 className="text-4xl">{t('account.login')}</h1>
         {/* TODO: Add onSubmit to validate _before_ submission with native? */}
         <Form
           method="post"
@@ -124,7 +127,7 @@ export default function Login() {
               type="email"
               autoComplete="email"
               required
-              placeholder="Email address"
+              placeholder={t('fields.email')}
               aria-label="Email address"
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
@@ -149,7 +152,7 @@ export default function Login() {
               name="password"
               type="password"
               autoComplete="current-password"
-              placeholder="Password"
+              placeholder={t('fields.password')}
               aria-label="Password"
               minLength={8}
               required
@@ -183,21 +186,20 @@ export default function Login() {
               type="submit"
               disabled={!!(nativePasswordError || nativeEmailError)}
             >
-              Sign in
+              {t('account.login')}
             </button>
           </div>
           <div className="flex justify-between items-center mt-8 border-t border-gray-300">
             <p className="align-baseline text-sm mt-6">
-              New to {shopName}? &nbsp;
               <Link className="inline underline" to="/account/register">
-                Create an account
+                {t('account.create')}
               </Link>
             </p>
             <Link
               className="mt-6 inline-block align-baseline text-sm text-primary/50"
               to="/account/recover"
             >
-              Forgot password
+              {t('account.forgot')}
             </Link>
           </div>
         </Form>
